@@ -7,16 +7,17 @@ import com.mongoplus.handlers.condition.ConditionHandler;
 import com.mongoplus.toolkit.ObjectIdUtil;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * ObjectId类型查询参数处理
+ * 
  * @author anwen
  */
 public class ObjectIdHandler implements ConditionHandler {
 
-    private final Map<Field,Boolean> fieldCache = new HashMap<>();
+    private final Map<Field, Boolean> fieldCache = new ConcurrentHashMap<>();
 
     @Override
     public void beforeQueryCondition(CompareCondition compareCondition, BasicDBObject basicDBObject) {

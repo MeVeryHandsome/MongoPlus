@@ -9,6 +9,7 @@ import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class MongoCommandBuildUtils {
 
-    private static final Map<String, Function<CommandStartedEvent, String>> HANDLERS = new HashMap<>();
+    private static final Map<String, Function<CommandStartedEvent, String>> HANDLERS = new ConcurrentHashMap<>();
 
     static {
         HANDLERS.put(CommandEnum.FIND.getCommand(), MongoCommandBuildUtils::buildFindCommand);
@@ -50,11 +51,11 @@ public class MongoCommandBuildUtils {
 
         String collection = getJson("find", "", event);
         String json = getJson("filter", "", event);
-        String sort = getJson("sort","",event);
+        String sort = getJson("sort", "", event);
         String skip = getJson("skip", "", event);
         String limit = getJson("limit", "", event);
         String command = "db." + collection + "." + event.getCommandName() + "(" + json + ")";
-        if (StringUtils.isNotBlank(sort)){
+        if (StringUtils.isNotBlank(sort)) {
             command += ".sort(" + sort + ")";
         }
         if (StringUtils.isNotBlank(skip) && !skip.equals("0")) {
@@ -126,17 +127,17 @@ public class MongoCommandBuildUtils {
 
     }
 
-    private static String buildIndexCommand(CommandStartedEvent event){
+    private static String buildIndexCommand(CommandStartedEvent event) {
         Document document = new Document();
         BsonDocument bsonDocument = event.getCommand();
-        String db = "getSiblingDB(\""+bsonDocument.getString("$db").getValue()+"\")";
+        String db = "getSiblingDB(\"" + bsonDocument.getString("$db").getValue() + "\")";
         String collection = bsonDocument.getString("createIndexes").getValue();
-        document.put("createIndexes",collection);
-        document.put("indexes",bsonDocument.getArray("indexes").getValues());
+        document.put("createIndexes", collection);
+        document.put("indexes", bsonDocument.getArray("indexes").getValues());
         if (bsonDocument.containsKey("writeConcern")) {
             document.put("writeConcern", bsonDocument.getDocument("writeConcern"));
         }
-        return "db."+db+".runCommand("+document.toJson()+")";
+        return "db." + db + ".runCommand(" + document.toJson() + ")";
     }
 
     private static String getJson(BsonValue bs, String item) {

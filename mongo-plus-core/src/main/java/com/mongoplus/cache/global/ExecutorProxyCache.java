@@ -4,8 +4,8 @@ import com.mongoplus.enums.ExecuteMethodEnum;
 import com.mongoplus.strategy.executor.MethodExecutorStrategy;
 import com.mongoplus.strategy.executor.impl.*;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 方法执行器缓存
@@ -14,7 +14,8 @@ import java.util.Map;
  */
 public class ExecutorProxyCache {
 
-    public static final Map<ExecuteMethodEnum, MethodExecutorStrategy> EXECUTOR_MAP = new HashMap<>(ExecuteMethodEnum.values().length);
+    public static final Map<ExecuteMethodEnum, MethodExecutorStrategy> EXECUTOR_MAP = new ConcurrentHashMap<>(
+            ExecuteMethodEnum.values().length);
 
     static {
         EXECUTOR_MAP.put(ExecuteMethodEnum.SAVE, new SaveExecutorStrategy());

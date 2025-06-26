@@ -3,9 +3,9 @@ package com.mongoplus.manager;
 import com.mongoplus.model.LogicDeleteResult;
 import com.mongoplus.model.LogicProperty;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class LogicManager {
@@ -25,15 +25,16 @@ public class LogicManager {
     /**
      * 目标文档对应的逻辑删除字段
      */
-    public static final Map<Class<?>, LogicDeleteResult> logicDeleteResultHashMap = new HashMap<>();
+    public static final Map<Class<?>, LogicDeleteResult> logicDeleteResultHashMap = new ConcurrentHashMap<>();
 
     /**
      * 忽略逻辑删除
+     * 
      * @param supplier 执行方法
      * @return {@link T}
      * @author anwen
      */
-    public static <T> T withoutLogic(Supplier<T> supplier){
+    public static <T> T withoutLogic(Supplier<T> supplier) {
         try {
             ignoreLogicCondition();
             return supplier.get();
@@ -44,10 +45,11 @@ public class LogicManager {
 
     /**
      * 忽略逻辑删除
+     * 
      * @param runnable 执行方法
      * @author anwen
      */
-    public static void withoutLogic(Runnable runnable){
+    public static void withoutLogic(Runnable runnable) {
         try {
             ignoreLogicCondition();
             runnable.run();
@@ -58,6 +60,7 @@ public class LogicManager {
 
     /**
      * 忽略逻辑删除条件
+     * 
      * @author anwen
      */
     public static void ignoreLogicCondition() {
@@ -66,6 +69,7 @@ public class LogicManager {
 
     /**
      * 是否忽略逻辑删除
+     * 
      * @return {@link boolean}
      * @author anwen
      */
@@ -77,6 +81,7 @@ public class LogicManager {
 
     /**
      * 恢复逻辑删除条件
+     * 
      * @author anwen
      */
     public static void restoreLogicCondition() {
